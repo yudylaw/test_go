@@ -18,7 +18,7 @@ func Max(a, b int) (max int) {
 	//go 不支持三目运算符, 例如: max = a > b ? a : b;
 	if (a > b) {
 		max = a;
-	} else {
+	} else { // } else 必须同一行
 		max = b;
 	}
 	return;

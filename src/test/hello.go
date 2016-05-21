@@ -42,7 +42,8 @@ func main() {
 //	testStruct();
 //	testInterface();
 //	testIO();
- testHttp();
+// testHttp();
+	testRange()
 }
 
 func testHttp() {
@@ -151,16 +152,28 @@ func testDefer() {
 func testSwitch() {
 	fmt.Println("When's Saturday?");
 	today := time.Now().Weekday();
-	switch time.Saturday {
+	switch time.Saturday { // switch { 同一行
 		case today + 0:
 			fmt.Println("Today.");
 //			break;// break 可以省略
-		case today + 1:
+		case today + 1, today + 3: //多值, 表达式
 			fmt.Println("Tomorrow.");
 		case today + 2:
 			fmt.Println("In two days.");
 		default:
 			fmt.Println("Too far away.");
+	}
+	
+	i := 1
+	
+	switch i {
+		case 1:
+			fmt.Println("i == 1")
+			fallthrough //同时满足下一个 case 条件
+		case 2:
+			fmt.Println("i == 1 or 2")
+		case 3:
+			fmt.Println("i == 3")
 	}
 }
 
@@ -185,10 +198,20 @@ func testPointer() {
 	if a == nil {
 		fmt.Println("a is nil");
 	}
-	var num int = 1010;
-	var p *int = &num;//指针
-	fmt.Printf("p:%p \n", p);
-	fmt.Printf("*p:%d", *p);
+//	var num int = 1010;
+//	var p *int = &num;//指针
+//	fmt.Printf("p:%p \n", p);
+//	fmt.Printf("*p:%d", *p);
+	
+    s := "good bye";
+    var p *string = &s;
+    s2 := "yudy";
+    fmt.Printf("Here is the pointer p: %p\n", p);
+    p = &s2;//改变指针的值, 内存地址
+//    *p = "ciao";//改变指针指向的内容
+    fmt.Printf("Here is the pointer p: %p\n", p);
+    fmt.Printf("Here is the string *p: %s\n", *p);
+    fmt.Printf("Here is the string s: %s\n", s);
 }
 
 func testStruct() {
@@ -243,4 +266,13 @@ func write(ch chan int) {
 	  		fmt.Println("write");
 	        ch <- 10;
 	    }
+}
+
+func testRange() {
+	str := "你好-abc123"
+	for pos, ch := range str {
+		fmt.Printf("pos:%d, char:%c, unicode:%U, %X \n", pos, ch, ch, []byte(string(ch)));
+		//%U, unicode
+		//%X, utf8的16进制
+	}
 }

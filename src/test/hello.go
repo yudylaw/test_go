@@ -10,6 +10,8 @@ import (
 	"person/man"
 	"runtime"
 	"time"
+	"unsafe"
+	"reflect"
 )
 
 const MAX int = 100 //常量
@@ -39,8 +41,8 @@ func main() {
 	//testPointer();
 	//	testArray();
 	//	testMap();
-	testClosure()
-	//	testStruct();
+//	testClosure()
+		testStruct()
 	//	testInterface();
 	//	testIO();
 	// testHttp();
@@ -86,7 +88,7 @@ func testInterface() {
 	var action IAction = ui
 	action.Search()
 	//只要实现了接口的方法，就满足多态, 没有包依赖
-	var sm = man.StrongMan{10, 11}
+	var sm = man.StrongMan{Weight:10, Height:11}
 	action = sm
 	action.Search()
 	fmt.Println(sm)
@@ -254,11 +256,22 @@ func testPointer() {
 func testStruct() {
 	//struct
 	sp := man.StrongMan{Weight: 99, Height: 99}
+	sp.City = "HF"
+	sp.Street = "TEH"
 	fmt.Println(sp)
 	sp.SayHello(1001)
-	fmt.Println(sp)
+	fmt.Println(sp.Address)
 	sp.SayBye(1002) // 方法接受者是引用, 无法改变引用指向的值
 	fmt.Println(sp)
+	sp2 := man.NewStrongMan(110, 111)
+	fmt.Printf("memory size:%d byte\n", unsafe.Sizeof(sp2)) //内存大小
+	//反射
+	type1 := reflect.TypeOf(sp)
+	fmt.Println(type1) //结构体类型 man.StrongMan
+	fmt.Println(type1.Field(0).Tag)
+	type2 := reflect.TypeOf(sp2)
+	fmt.Println(type2) // 指针 *man.StrongMan
+//	fmt.Println(type2.Field(0).Tag) //不支持 panic: reflect: Field of non-struct type
 }
 
 func testType() {

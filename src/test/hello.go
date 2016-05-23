@@ -25,9 +25,31 @@ type IAction interface {
 	Search()
 }
 
+//Go 语言规范定义了接口方法集的调用规则：
+//
+//类型 *T 的可调用方法集包含接受者为 *T 或 T 的所有方法集
+//类型 T 的可调用方法集包含接受者为 T 的所有方法
+//类型 T 的可调用方法集不包含接受者为 *T 的方法
+
+type IMath interface {
+	ADD()
+}
+
+//引用指针均可以调用
 func (ui MyUint32) Search() {
 	fmt.Println("MyUint32 search")
 }
+
+//只能指针来调用
+func (ui *MyUint32) ADD() {
+	fmt.Println("MyUint32 add")
+}
+
+//math *IMath 错误定义, 原因是接口变量中存储的具体值是不可寻址的
+func testAdd(math IMath) {
+	math.ADD()
+}
+
 
 func main() {
 	fmt.Printf("hello goos:%s\n", runtime.GOOS)
@@ -42,8 +64,8 @@ func main() {
 	//	testArray();
 	//	testMap();
 //	testClosure()
-		testStruct()
-	//	testInterface();
+//		testStruct()
+		testInterface()
 	//	testIO();
 	// testHttp();
 	//	testRange()
@@ -86,12 +108,27 @@ func testIO() {
 func testInterface() {
 	var ui MyUint32 = 1230
 	var action IAction = ui
+	ui2 := new(MyUint32)
+//	testAdd(ui) //接受者必须是指针类型
+	testAdd(ui2)
+	if t, ok := action.(MyUint32); ok { //接口类型断言
+		fmt.Printf("%T is type of MyUint32\n", t)
+	}
+	//type-switch 类型判断
+	switch t := action.(type) {
+		case IAction:
+			fmt.Printf("%T is IAction, value:%v\n", t, t)
+		case nil:
+			fmt.Printf("nil value: nothing to check?\n")
+		default:
+			fmt.Println("type not found")
+	}
 	action.Search()
 	//只要实现了接口的方法，就满足多态, 没有包依赖
-	var sm = man.StrongMan{Weight:10, Height:11}
-	action = sm
-	action.Search()
-	fmt.Println(sm)
+//	var sm = man.StrongMan{Weight:10, Height:11}
+//	action = sm
+//	action.Search()
+//	fmt.Println(sm)
 }
 
 //闭包, 函数也是值

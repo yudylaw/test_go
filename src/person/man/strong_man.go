@@ -38,11 +38,13 @@ func init() {
 //首先避免在每个方法调用中拷贝值（如果值类型是大的结构体的话会更有效率）。
 //其次，方法可以修改接收者指向的值。
 //结构体方法
+//func (recv receiver_type) methodName(parameter_list) (return_value_list) { ... }
 func (sm *StrongMan) SayHello(height int) {
 	sm.Height = height
 	fmt.Printf("SayHello w:%d, h:%d \n", sm.Weight, sm.Height)
 }
 
+//指针方法和值方法都可以在指针或非指针上被调用
 func (sm StrongMan) SayBye(height int) {
 	sm.Height = height
 	fmt.Printf("SayBye w:%d, h:%d \n", sm.Weight, sm.Height)

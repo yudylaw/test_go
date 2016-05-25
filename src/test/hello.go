@@ -40,9 +40,16 @@ func (ui MyUint32) Search() {
 	fmt.Println("MyUint32 search")
 }
 
-//只能指针来调用
+//引用指针均可以调用（如果通过对象实例来访问）
+//只能指针来调用 ( 如果通过接口来访问，见testAdd）
 func (ui *MyUint32) ADD() {
 	fmt.Println("MyUint32 add")
+}
+
+func makeMyUint32() MyUint32 {
+	var my MyUint32 = 10;
+	fmt.Println("makeMyUint32")
+	return my
 }
 
 //math *IMath 错误定义, 原因是接口变量中存储的具体值是不可寻址的
@@ -64,8 +71,8 @@ func main() {
 	//	testArray();
 	//	testMap();
 //	testClosure()
-//		testStruct()
-		testInterface()
+		testStruct()
+//		testInterface()
 	//	testIO();
 	// testHttp();
 	//	testRange()
@@ -111,6 +118,8 @@ func testInterface() {
 	ui2 := new(MyUint32)
 //	testAdd(ui) //接受者必须是指针类型
 	testAdd(ui2)
+	my := makeMyUint32()
+	my.ADD()
 	if t, ok := action.(MyUint32); ok { //接口类型断言
 		fmt.Printf("%T is type of MyUint32\n", t)
 	}

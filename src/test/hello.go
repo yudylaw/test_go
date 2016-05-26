@@ -12,6 +12,7 @@ import (
 	"time"
 	"unsafe"
 	"reflect"
+	"encoding/json"
 )
 
 const MAX int = 100 //常量
@@ -59,6 +60,10 @@ func testAdd(math IMath) {
 
 
 func main() {
+	args := os.Args
+	for index, arg := range args {
+		fmt.Printf("args, index:%d, arg:%s\n", index, arg)
+	}
 	fmt.Printf("hello goos:%s\n", runtime.GOOS)
 	//testChannel();
 	//	testPerson();
@@ -71,11 +76,14 @@ func main() {
 	//	testArray();
 	//	testMap();
 //	testClosure()
-		testStruct()
+//		testStruct()
 //		testInterface()
 	//	testIO();
 	// testHttp();
 	//	testRange()
+//	testScan()
+//	testWrite()
+	testJson()
 }
 
 func testHttp() {
@@ -372,3 +380,43 @@ func testRange() {
 		//%X, utf8的16进制
 	}
 }
+
+func testScan() {
+	//scan
+//	fmt.Println("input your name:")
+//	var name, addr string
+//	fmt.Scanln(&name, &addr) //空格分割
+//	fmt.Printf("name is :%s, addr:%s \n", name, addr)
+	//bufio
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Println("bufio, input something:")
+	
+//	n, err := inputReader.Read(buf) //n 表示读到的字节数
+//	if (n == 0) { break}
+	
+	input, err := reader.ReadString('\n')
+	if (err == nil) {
+			fmt.Printf("input was:%s\n", input)
+	}
+}
+
+func testWrite() {
+	file, err := os.OpenFile("/home/yudylaw/yudy/test.log", os.O_WRONLY, 0666)
+	if (err != nil) {
+		fmt.Println("failed to OpenFile")
+		return
+	}
+	defer file.Close()
+	output := bufio.NewWriter(file)
+	for i:=0;i < 3;i++ {
+		output.WriteString("i am yudy\n")
+	}
+	output.Flush() //bufio 必须有
+}
+
+func testJson() {
+	add := &man.Address{"合肥", "繁华大道"}
+	js, _ := json.Marshal(add)
+	fmt.Printf("json is:%s\n", js)
+}
+

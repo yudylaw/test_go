@@ -13,6 +13,7 @@ import (
 	"unsafe"
 	"reflect"
 	"encoding/json"
+	"errors"
 )
 
 const MAX int = 100 //常量
@@ -65,7 +66,7 @@ func main() {
 		fmt.Printf("args, index:%d, arg:%s\n", index, arg)
 	}
 	fmt.Printf("hello goos:%s\n", runtime.GOOS)
-	//testChannel();
+//	testChannel()
 	//	testPerson();
 	//	man.Say();
 	//	fmt.Println(MAX);
@@ -79,21 +80,31 @@ func main() {
 //		testStruct()
 //		testInterface()
 	//	testIO();
-	// testHttp();
+	 testHttp()
 	//	testRange()
 //	testScan()
 //	testWrite()
-	testJson()
+//	testJson()
+//	testErrs()
+//	testPanic()
+//	testSelect()
+	fmt.Println("end of main")
 }
 
 func testHttp() {
 	//	var ui MyUint32 = 10;
 	http.Handle("/test", String("hello test"))
 	http.Handle("/bug", String("hello bug"))
+	http.HandleFunc("/hello", HelloServer)
 	err := http.ListenAndServe(":4040", nil) // nil
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func HelloServer(w http.ResponseWriter, req *http.Request) {
+    fmt.Println("Inside HelloServer handler")
+    fmt.Fprintf(w, "Hello,"+req.URL.Path[1:])
 }
 
 //http Handler interface
@@ -345,21 +356,33 @@ func testPerson() {
 }
 
 func testChannel() {
+	
+//	runtime.GOMAXPROCS(7) // n - 1
+	
+	//通道的方向，通过使用方向注解来限制协程对通道的操作
+//	var send_only chan<- int        // channel can only receive data
+//	var recv_only <-chan int        // channel can onley send data
+	
 	var myChan chan int = make(chan int)        // 无缓冲
-	var signalChan chan int = make(chan int, 2) // 有缓存信道
+	var signalChan chan int = make(chan int, 2) // cap > 0, 有缓存信道
 
-	//go channel 生产与消费者必须成对出现
-	//	myChan <- 10;// deadlock
+//		myChan <- 10;// deadlock，main 线程阻塞在这里, 等待消费者消费
 
 	go write(myChan)
 	go read(myChan, signalChan)
-
+	
 	fmt.Println("signal %d", <-signalChan)
+}
+
+//通道迭代模式
+//for x := range container.Iter() { ... }
+func (c *MyUint32) Iter () <- chan int {
+	ch := make(chan int)
+	return ch
 }
 
 func read(ch chan int, sch chan int) {
 	for {
-		fmt.Println("read")
 		fmt.Println("read %d", <-ch)
 		sch <- 0
 	}
@@ -367,8 +390,8 @@ func read(ch chan int, sch chan int) {
 
 func write(ch chan int) {
 	for {
-		fmt.Println("write")
 		ch <- 10
+		fmt.Println("write")
 	}
 }
 
@@ -419,4 +442,61 @@ func testJson() {
 	js, _ := json.Marshal(add)
 	fmt.Printf("json is:%s\n", js)
 }
+
+func testErrs() {
+	err := errors.New("error happened")
+	fmt.Println(err)
+}
+
+func badCall() {
+    panic("bad end")
+}
+
+func testPanic() {
+    defer func() {
+        if e := recover(); e != nil {
+            fmt.Printf("Panicing %s\n", e)
+        }
+    }()
+    badCall()
+    fmt.Printf("After bad call\n") //执行不到
+}
+
+func testSelect() {
+	ch1 := make(chan int)
+	ch2 := make(chan int)
+
+	go pump1(ch1)
+	go pump2(ch2)
+	go suck(ch1, ch2)
+
+	time.Sleep(1e9) //10^9 ns = 1s
+	
+//	time.Tick(1e9) //定时器通道
+}
+
+func pump1(ch chan int) {
+	for i := 0; ; i++ {
+		ch <- i * 2
+	}
+}
+
+func pump2(ch chan int) {
+	for i := 0; ; i++ {
+		ch <- i + 5
+	}
+}
+
+func suck(ch1, ch2 chan int) {
+	for {
+		select {
+			case v := <-ch1:
+				fmt.Printf("Received on channel 1: %d\n", v)
+			case v := <-ch2:
+				fmt.Printf("Received on channel 2: %d\n", v)
+		}
+	}
+}
+
+
 

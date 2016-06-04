@@ -5,27 +5,27 @@ import (
 )
 
 type Address struct {
-	City string
+	City   string
 	Street string
 }
 
 //结构体的内存布局是连续的
 //go 中没有类, 结构体就是她的类
 type StrongMan struct { // tags
-	Weight int "weight of man"
-	Height int "height of man"
-	int //匿名字段
-	Address //匿名字段, 实现继承
+	Weight  int "weight of man"
+	Height  int "height of man"
+	int         //匿名字段
+	Address     //匿名字段, 实现继承
 }
 
 //工厂构造方法
 //可以私有化 StrongMan ( strongMan ), 强制使用工厂方法
 func NewStrongMan(w, h int) *StrongMan {
-//	sm := make(StrongMan) //结构体不支持 make
-//	sm := new(StrongMan)
-//	sm.Weight = w
-//	sm.Height = h
-//	return sm
+	//	sm := make(StrongMan) //结构体不支持 make
+	//	sm := new(StrongMan)
+	//	sm.Weight = w
+	//	sm.Height = h
+	//	return sm
 	return &StrongMan{Weight: w, Height: h} //简洁的初始化方式
 }
 

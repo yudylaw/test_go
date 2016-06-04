@@ -2,18 +2,20 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
+	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"person"
 	"person/man"
+	"reflect"
+	"regexp"
 	"runtime"
 	"time"
 	"unsafe"
-	"reflect"
-	"encoding/json"
-	"errors"
 )
 
 const MAX int = 100 //常量
@@ -49,7 +51,7 @@ func (ui *MyUint32) ADD() {
 }
 
 func makeMyUint32() MyUint32 {
-	var my MyUint32 = 10;
+	var my MyUint32 = 10
 	fmt.Println("makeMyUint32")
 	return my
 }
@@ -59,14 +61,13 @@ func testAdd(math IMath) {
 	math.ADD()
 }
 
-
 func main() {
 	args := os.Args
 	for index, arg := range args {
 		fmt.Printf("args, index:%d, arg:%s\n", index, arg)
 	}
 	fmt.Printf("hello goos:%s\n", runtime.GOOS)
-//	testChannel()
+	//	testChannel()
 	//	testPerson();
 	//	man.Say();
 	//	fmt.Println(MAX);
@@ -76,18 +77,23 @@ func main() {
 	//testPointer();
 	//	testArray();
 	//	testMap();
-//	testClosure()
-//		testStruct()
-//		testInterface()
+	//	testClosure()
+	//		testStruct()
+	//		testInterface()
 	//	testIO();
-	 testHttp()
+	//	 testHttp()
 	//	testRange()
-//	testScan()
-//	testWrite()
-//	testJson()
-//	testErrs()
-//	testPanic()
-//	testSelect()
+	//	testScan()
+	//	testWrite()
+	//	testJson()
+	//	testErrs()
+	//	testPanic()
+	//	testSelect()
+	//	testTimer()
+	//	testFilePath()
+	//testDate()
+	//testReg()
+	testTimer2()
 	fmt.Println("end of main")
 }
 
@@ -103,8 +109,8 @@ func testHttp() {
 }
 
 func HelloServer(w http.ResponseWriter, req *http.Request) {
-    fmt.Println("Inside HelloServer handler")
-    fmt.Fprintf(w, "Hello,"+req.URL.Path[1:])
+	fmt.Println("Inside HelloServer handler")
+	fmt.Fprintf(w, "Hello,"+req.URL.Path[1:])
 }
 
 //http Handler interface
@@ -135,7 +141,7 @@ func testInterface() {
 	var ui MyUint32 = 1230
 	var action IAction = ui
 	ui2 := new(MyUint32)
-//	testAdd(ui) //接受者必须是指针类型
+	//	testAdd(ui) //接受者必须是指针类型
 	testAdd(ui2)
 	my := makeMyUint32()
 	my.ADD()
@@ -144,19 +150,19 @@ func testInterface() {
 	}
 	//type-switch 类型判断
 	switch t := action.(type) {
-		case IAction:
-			fmt.Printf("%T is IAction, value:%v\n", t, t)
-		case nil:
-			fmt.Printf("nil value: nothing to check?\n")
-		default:
-			fmt.Println("type not found")
+	case IAction:
+		fmt.Printf("%T is IAction, value:%v\n", t, t)
+	case nil:
+		fmt.Printf("nil value: nothing to check?\n")
+	default:
+		fmt.Println("type not found")
 	}
 	action.Search()
 	//只要实现了接口的方法，就满足多态, 没有包依赖
-//	var sm = man.StrongMan{Weight:10, Height:11}
-//	action = sm
-//	action.Search()
-//	fmt.Println(sm)
+	//	var sm = man.StrongMan{Weight:10, Height:11}
+	//	action = sm
+	//	action.Search()
+	//	fmt.Println(sm)
 }
 
 //闭包, 函数也是值
@@ -336,7 +342,7 @@ func testStruct() {
 	fmt.Println(type1.Field(0).Tag)
 	type2 := reflect.TypeOf(sp2)
 	fmt.Println(type2) // 指针 *man.StrongMan
-//	fmt.Println(type2.Field(0).Tag) //不支持 panic: reflect: Field of non-struct type
+	//	fmt.Println(type2.Field(0).Tag) //不支持 panic: reflect: Field of non-struct type
 }
 
 func testType() {
@@ -356,27 +362,27 @@ func testPerson() {
 }
 
 func testChannel() {
-	
-//	runtime.GOMAXPROCS(7) // n - 1
-	
+
+	//	runtime.GOMAXPROCS(7) // n - 1
+
 	//通道的方向，通过使用方向注解来限制协程对通道的操作
-//	var send_only chan<- int        // channel can only receive data
-//	var recv_only <-chan int        // channel can onley send data
-	
+	//	var send_only chan<- int        // channel can only receive data
+	//	var recv_only <-chan int        // channel can onley send data
+
 	var myChan chan int = make(chan int)        // 无缓冲
 	var signalChan chan int = make(chan int, 2) // cap > 0, 有缓存信道
 
-//		myChan <- 10;// deadlock，main 线程阻塞在这里, 等待消费者消费
+	//		myChan <- 10;// deadlock，main 线程阻塞在这里, 等待消费者消费
 
 	go write(myChan)
 	go read(myChan, signalChan)
-	
+
 	fmt.Println("signal %d", <-signalChan)
 }
 
 //通道迭代模式
 //for x := range container.Iter() { ... }
-func (c *MyUint32) Iter () <- chan int {
+func (c *MyUint32) Iter() <-chan int {
 	ch := make(chan int)
 	return ch
 }
@@ -406,32 +412,32 @@ func testRange() {
 
 func testScan() {
 	//scan
-//	fmt.Println("input your name:")
-//	var name, addr string
-//	fmt.Scanln(&name, &addr) //空格分割
-//	fmt.Printf("name is :%s, addr:%s \n", name, addr)
+	//	fmt.Println("input your name:")
+	//	var name, addr string
+	//	fmt.Scanln(&name, &addr) //空格分割
+	//	fmt.Printf("name is :%s, addr:%s \n", name, addr)
 	//bufio
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Println("bufio, input something:")
-	
-//	n, err := inputReader.Read(buf) //n 表示读到的字节数
-//	if (n == 0) { break}
-	
+
+	//	n, err := inputReader.Read(buf) //n 表示读到的字节数
+	//	if (n == 0) { break}
+
 	input, err := reader.ReadString('\n')
-	if (err == nil) {
-			fmt.Printf("input was:%s\n", input)
+	if err == nil {
+		fmt.Printf("input was:%s\n", input)
 	}
 }
 
 func testWrite() {
 	file, err := os.OpenFile("/home/yudylaw/yudy/test.log", os.O_WRONLY, 0666)
-	if (err != nil) {
+	if err != nil {
 		fmt.Println("failed to OpenFile")
 		return
 	}
 	defer file.Close()
 	output := bufio.NewWriter(file)
-	for i:=0;i < 3;i++ {
+	for i := 0; i < 3; i++ {
 		output.WriteString("i am yudy\n")
 	}
 	output.Flush() //bufio 必须有
@@ -449,17 +455,17 @@ func testErrs() {
 }
 
 func badCall() {
-    panic("bad end")
+	panic("bad end")
 }
 
 func testPanic() {
-    defer func() {
-        if e := recover(); e != nil {
-            fmt.Printf("Panicing %s\n", e)
-        }
-    }()
-    badCall()
-    fmt.Printf("After bad call\n") //执行不到
+	defer func() {
+		if e := recover(); e != nil {
+			fmt.Printf("Panicing %s\n", e)
+		}
+	}()
+	badCall()
+	fmt.Printf("After bad call\n") //执行不到
 }
 
 func testSelect() {
@@ -471,8 +477,8 @@ func testSelect() {
 	go suck(ch1, ch2)
 
 	time.Sleep(1e9) //10^9 ns = 1s
-	
-//	time.Tick(1e9) //定时器通道
+
+	//	time.Tick(1e9) //定时器通道
 }
 
 func pump1(ch chan int) {
@@ -490,13 +496,84 @@ func pump2(ch chan int) {
 func suck(ch1, ch2 chan int) {
 	for {
 		select {
-			case v := <-ch1:
-				fmt.Printf("Received on channel 1: %d\n", v)
-			case v := <-ch2:
-				fmt.Printf("Received on channel 2: %d\n", v)
+		case v := <-ch1:
+			fmt.Printf("Received on channel 1: %d\n", v)
+		case v := <-ch2:
+			fmt.Printf("Received on channel 2: %d\n", v)
 		}
 	}
 }
 
+func testTimer() {
+	ticker := time.NewTicker(1 * time.Second)
 
+	go func() {
 
+		for t := range ticker.C {
+			fmt.Printf("tick %v\n", t)
+		}
+
+	}()
+
+	ch := make(chan int)
+	ch <- 0
+}
+
+func testFilePath() {
+	files, _ := ioutil.ReadDir("E:\\go_workspace\\test_go\\src\\person")
+	for _, fi := range files {
+		if !fi.IsDir() {
+			fmt.Println(fi.Name())
+		}
+	}
+}
+
+func testDate() {
+	preDate := time.Now().AddDate(0, 0, -7).Format("2006-01-02")
+
+	preTime, _ := time.Parse("2006-01-02", preDate)
+
+	fmt.Println(preTime)
+
+	date, _ := time.Parse("2006-01-02", "2016-05-27")
+	fmt.Println(date)
+
+	isBefore := date.Before(preTime)
+	fmt.Println(isBefore)
+}
+
+func testReg() {
+	reg, err := regexp.Compile("advert_([0-9]{4}-[0-9]{2}-[0-9]{2})\\.utf8")
+	fmt.Println(err)
+
+	//	match := reg.MatchString("advert_2016-02-12.utf8")
+	//	fmt.Println(match)
+
+	fmt.Println(reg.FindStringSubmatch("advert_2016-02-12.utf8"))
+}
+
+func testTimer2() {
+	startTimer(func() {
+		fmt.Println("hello...")
+	})
+	time.Sleep(100 * time.Second)
+}
+
+//每天固定时间点执行
+func startTimer(f func()) {
+	go func() {
+		for {
+			now := time.Now()
+
+			next := time.Date(now.Year(), now.Month(), now.Day(), 17, 41, 0, 0, now.Location())
+
+			if next.Before(now) {
+				next = next.Add(24 * time.Hour)
+			}
+
+			t := time.NewTimer(next.Sub(now))
+			<-t.C
+			f()
+		}
+	}()
+}

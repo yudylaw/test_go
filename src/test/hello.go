@@ -16,6 +16,7 @@ import (
 	"runtime"
 	"time"
 	"unsafe"
+	"strings"
 )
 
 const MAX int = 100 //常量
@@ -93,7 +94,8 @@ func main() {
 	//	testFilePath()
 	//testDate()
 	//testReg()
-	testTimer2()
+//	testTimer2()
+	testSplit()
 	fmt.Println("end of main")
 }
 
@@ -576,4 +578,15 @@ func startTimer(f func()) {
 			f()
 		}
 	}()
+}
+
+func testSplit() {
+	
+	var name string = "12.hanzhi.nv"
+	
+	index := strings.LastIndex(name, ".")
+	
+	fmt.Println(name[index:len(name)])
+	fmt.Println(name[0:index])
+	
 }

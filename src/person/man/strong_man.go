@@ -31,7 +31,12 @@ func NewStrongMan(w, h int) *StrongMan {
 
 //初始化函数, 先于 main 方法执行
 func init() {
-	fmt.Println("package man init.")
+	fmt.Println("package man init-1.")
+}
+
+//初始化函数, 先于 main 方法执行，允许存在多个
+func init() {
+	fmt.Println("package man init-2.")
 }
 
 //有两个原因需要使用指针接收者。

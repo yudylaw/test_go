@@ -102,7 +102,7 @@ func main() {
 	//	testSwitch();
 	//	testDefer()
 	//testPointer();
-	//	testArray();
+	//	testArray()
 	//	testMap();
 	//	testClosure()
 	//	testStruct()
@@ -125,7 +125,8 @@ func main() {
 	//	flag := CompareVersion("CA1.4.0_Iphone", "CA1.4.0_Iphone", "Iphone")
 	//	fmt.Println("flag=", flag)
 	//	testContext()
-	testReflect()
+	//	testReflect()
+	testNil()
 	fmt.Println("end of main")
 }
 
@@ -258,6 +259,8 @@ func testArray() {
 	for _, v := range p { // v 只是拷贝, 无法修改切片 p
 		fmt.Printf("v:%d \n", v)
 	}
+	//常量不可以取地址
+	//	fmt.Println(&MAX)
 }
 
 func testDefer() {
@@ -730,4 +733,58 @@ func testReflect() {
 	v := reflect.ValueOf(height)
 	parmas := []reflect.Value{v}
 	sayHello.Call(parmas)
+}
+
+type data struct{}
+
+func (this *data) Error() string { return "" }
+
+func testNilError() error {
+	var p *data = nil
+	if p == nil {
+		fmt.Printf("testNilError.p is nil\n")
+	}
+	return p
+}
+
+func testNil() {
+	var val interface{} = nil //nil
+	if val == nil {
+		fmt.Println("val is nil")
+	} else {
+		fmt.Println("val is not nil")
+	}
+
+	var val2 interface{} = (*interface{})(nil) //not nil
+	if val2 == nil {
+		fmt.Println("val2 is nil")
+	} else {
+		fmt.Println("val2 is not nil")
+	}
+
+	var p *man.StrongMan = nil //nil
+	if p == nil {
+		fmt.Println("p is nil")
+	} else {
+		fmt.Println("p is not nil")
+	}
+
+	//类型转换后变成 not nil
+	//type到interface和interface之间可能是隐式转换
+	//interface{type,data}
+	var p2 interface{} = interface{}(p)
+
+	if p2 != nil {
+		fmt.Println("p2 is not nil")
+	}
+
+	var err error = testNilError() //not nil
+	if err == nil {
+		fmt.Println("err is nil")
+	} else {
+		fmt.Println("err is not nil")
+	}
+	t := reflect.TypeOf(err)
+	v := reflect.ValueOf(err)
+	fmt.Printf("err.Type=%v, err.Value=%v\n", t, v)
 }

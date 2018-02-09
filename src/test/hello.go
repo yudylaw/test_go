@@ -116,7 +116,7 @@ func main() {
 	//	testErrs()
 	//	testPanic()
 	//	testSelect()
-	testTimer()
+	//	testTimer()
 	//	testFilePath()
 	//testDate()
 	//testReg()
@@ -125,6 +125,7 @@ func main() {
 	//	flag := CompareVersion("CA1.4.0_Iphone", "CA1.4.0_Iphone", "Iphone")
 	//	fmt.Println("flag=", flag)
 	//	testContext()
+	testReflect()
 	fmt.Println("end of main")
 }
 
@@ -704,4 +705,29 @@ func testSplit() {
 			fmt.Println(pair[0], pair[1])
 		}
 	}
+}
+
+func testReflect() {
+	var a int = 199
+	t := reflect.TypeOf(a)
+	fmt.Printf("a.type=%v\n", t)
+
+	m := man.StrongMan{Weight: 100, Height: 200}
+	m2 := &man.StrongMan{Weight: 120, Height: 230}
+	t1 := reflect.TypeOf(m)
+	v1 := reflect.ValueOf(m)
+	v2 := reflect.ValueOf(m2)
+	fmt.Printf("m.type=%v, kind=%v\n", t1, t1.Kind())
+	fmt.Printf("m.value=%v, type=%v\n", v1, v1.Type())
+	//引用接收者
+	search := v1.MethodByName("Search")
+	//没有参数
+	search.Call(nil)
+
+	//指针接收者
+	sayHello := v2.MethodByName("SayHello")
+	height := 10
+	v := reflect.ValueOf(height)
+	parmas := []reflect.Value{v}
+	sayHello.Call(parmas)
 }

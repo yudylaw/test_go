@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -9,14 +10,16 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"person"
 	"person/man"
 	"reflect"
 	"regexp"
 	"runtime"
+	"strconv"
+	"strings"
 	"time"
 	"unsafe"
-	"strings"
 )
 
 const MAX int = 100 //常量
@@ -62,12 +65,35 @@ func testAdd(math IMath) {
 	math.ADD()
 }
 
-func main() {
-	args := os.Args
-	for index, arg := range args {
-		fmt.Printf("args, index:%d, arg:%s\n", index, arg)
+func testContext() {
+	// Pass a context with a timeout to tell a blocking function that it
+	// should abandon its work after the timeout elapses.
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	select {
+	case <-time.After(10 * time.Second):
+		fmt.Println("overslept")
+	case <-ctx.Done():
+		fmt.Println(ctx.Err()) // prints "context deadline exceeded"
 	}
+}
+
+func main() {
+	//	args := os.Args
+	//	for index, arg := range args {
+	//		fmt.Printf("args, index:%d, arg:%s\n", index, arg)
+	//	}
 	fmt.Printf("hello goos:%s\n", runtime.GOOS)
+	//
+	//	fmt.Println(time.Now().Unix())
+
+	//	var str1, str2 string
+	//	str1 = getCurrentDir()
+	//	str2 = getParentDir(str1)
+	//	fmt.Println(str1)
+	//	fmt.Println(str2)
+
 	//	testChannel()
 	//	testPerson();
 	//	man.Say();
@@ -79,8 +105,8 @@ func main() {
 	//	testArray();
 	//	testMap();
 	//	testClosure()
-	//		testStruct()
-	//		testInterface()
+	//	testStruct()
+	//	testInterface()
 	//	testIO();
 	//	 testHttp()
 	//	testRange()
@@ -90,12 +116,15 @@ func main() {
 	//	testErrs()
 	//	testPanic()
 	//	testSelect()
-	//	testTimer()
+	testTimer()
 	//	testFilePath()
 	//testDate()
 	//testReg()
-//	testTimer2()
-	testSplit()
+	//	testTimer2()
+	//	testSplit()
+	//	flag := CompareVersion("CA1.4.0_Iphone", "CA1.4.0_Iphone", "Iphone")
+	//	fmt.Println("flag=", flag)
+	//	testContext()
 	fmt.Println("end of main")
 }
 
@@ -497,6 +526,7 @@ func pump2(ch chan int) {
 
 func suck(ch1, ch2 chan int) {
 	for {
+		//功能类型 switch + 事件驱动
 		select {
 		case v := <-ch1:
 			fmt.Printf("Received on channel 1: %d\n", v)
@@ -519,6 +549,27 @@ func testTimer() {
 
 	ch := make(chan int)
 	ch <- 0
+}
+
+func substr(s string, pos, length int) string {
+	runes := []rune(s)
+	l := pos + length
+	if l > len(runes) {
+		l = len(runes)
+	}
+	return string(runes[pos:l])
+}
+
+func getParentDir(dirctory string) string {
+	return substr(dirctory, 0, strings.LastIndex(dirctory, "/"))
+}
+
+func getCurrentDir() string {
+	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err != nil {
+		log.Fatal(err)
+	}
+	return strings.Replace(dir, "\\", "/", -1)
 }
 
 func testFilePath() {
@@ -580,13 +631,77 @@ func startTimer(f func()) {
 	}()
 }
 
+func CompareVersion(sourceCV string, destCV string, OS string) bool {
+	//cv例子: CA1.4.0_Iphone, CA1.4.0_Android
+	if len(sourceCV) < 14 || len(destCV) < 14 {
+		return false
+	}
+
+	sourceCV = sourceCV[2:]
+	destCV = destCV[2:]
+
+	sourceList := strings.Split(sourceCV, "_")
+	destList := strings.Split(destCV, "_")
+
+	if len(sourceList) != 2 || len(destList) != 2 {
+		return false
+	}
+
+	if sourceList[1] != OS || destList[1] != OS {
+		return false
+	}
+
+	source := sourceList[0]
+	dest := destList[0]
+
+	sourceVec := strings.Split(source, ".")
+	destVec := strings.Split(dest, ".")
+
+	if len(sourceVec) != 3 || len(destVec) != 3 {
+		return false
+	}
+
+	sourceMajor, _ := strconv.Atoi(sourceVec[0])
+	sourceMinor, _ := strconv.Atoi(sourceVec[1])
+	sourceBuild, _ := strconv.Atoi(sourceVec[2])
+
+	destMajor, _ := strconv.Atoi(destVec[0])
+	destMinor, _ := strconv.Atoi(destVec[1])
+	destBuild, _ := strconv.Atoi(destVec[2])
+
+	// 主版本更高
+	if sourceMajor > destMajor {
+		return true
+	}
+
+	// 子版本更高
+	if sourceMajor == destMajor && sourceMinor > destMinor {
+		return true
+	}
+
+	// 特性版本更高
+	if sourceMajor == destMajor && sourceMinor == destMinor && sourceBuild >= destBuild {
+		return true
+	}
+
+	return false
+}
+
 func testSplit() {
-	
+
 	var name string = "12.hanzhi.nv"
-	
+
 	index := strings.LastIndex(name, ".")
-	
+
 	fmt.Println(name[index:len(name)])
 	fmt.Println(name[0:index])
-	
+
+	var atomic = "name=yudy&age=20&cv=IP_2_2_1"
+	values := strings.Split(atomic, "&")
+	for _, v := range values {
+		pair := strings.Split(v, "=")
+		if len(pair) > 1 && pair[0] == "cv" {
+			fmt.Println(pair[0], pair[1])
+		}
+	}
 }

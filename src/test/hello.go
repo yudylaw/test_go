@@ -115,7 +115,7 @@ func main() {
 	//	testJson()
 	//	testErrs()
 	//	testPanic()
-	//	testSelect()
+	testSelect()
 	//	testTimer()
 	//	testFilePath()
 	//testDate()
@@ -126,7 +126,7 @@ func main() {
 	//	fmt.Println("flag=", flag)
 	//	testContext()
 	//	testReflect()
-	testNil()
+	//	testNil()
 	fmt.Println("end of main")
 }
 
@@ -531,6 +531,7 @@ func pump2(ch chan int) {
 func suck(ch1, ch2 chan int) {
 	for {
 		//功能类型 switch + 事件驱动
+		//特点：一次性、阻塞
 		select {
 		case v := <-ch1:
 			fmt.Printf("Received on channel 1: %d\n", v)

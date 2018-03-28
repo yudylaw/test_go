@@ -1,0 +1,19 @@
+[[server_client]]
+service_name="feed_service"
+proto="rpc"
+endpoints="10.111.95.165:8121"
+balancetype="random"
+connnect_timeout=1100
+read_timeout=1000
+write_timeout=1110
+max_idleconn = 50
+
+[[server_client]]
+service_name="auth_service"
+proto="rpc"
+endpoints="10.111.95.165:9211"
+balancetype="random"
+connnect_timeout=1100
+read_timeout=1000
+write_timeout=1110
+max_idleconn = 50

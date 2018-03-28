@@ -1,0 +1,172 @@
+{
+	"ImportPath": "payment_api",
+	"GoVersion": "go1.8",
+	"GodepVersion": "v0.4",
+	"Deps": [
+		{
+			"ImportPath": "github.com/garyburd/redigo",
+			"Comment": "v1.2.0",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/eapache/queue",
+			"Comment": "v1.0.2-7-g44cc805",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/golang/snappy",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "git.inke.cn/inkelogic",
+			"Comment": "v0.0.2-59-gf9f8133",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/eapache/go-xerial-snappy",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/eapache/go-resiliency",
+			"Comment": "v1.0.0-6-gb1fe83b",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "gopkg.in/go-playground/validator.v8",
+			"Comment": "v8.18.2",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/pierrec/xxHash",
+			"Comment": "v0.1-11-ga0006b1",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "golang.org/x/sys",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/mattn/go-runewidth",
+			"Comment": "v0.0.2-3-g97311d9",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/golang/protobuf",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/wvanbergen/kafka",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/go-rootcerts",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/consul",
+			"Comment": "v1.0.0-231-ge5d5e642",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "gopkg.in/yaml.v2",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "panshi_api",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/satori/go.uuid",
+			"Comment": "v1.1.0-8-g5bf94b6",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "golang.org/x/net",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/pierrec/lz4",
+			"Comment": "v1.0.1",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/samuel/go-zookeeper",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/go-cleanhttp",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/mattn/go-isatty",
+			"Comment": "v0.0.3-1-ga5cdd64",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/rcrowley/go-metrics",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/Shopify/sarama",
+			"Comment": "v1.13.0-5-g70f6a70",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "git.inke.cn/BackendPlatform/toml",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/ugorji/go",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "payment_api",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/olekukonko/tablewriter",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/gin-contrib/sse",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/davecgh/go-spew",
+			"Comment": "v1.1.0-9-gecdeabc",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/sirupsen/logrus",
+			"Comment": "v1.0.3-11-g89742ae",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/gin-gonic/gin",
+			"Comment": "v1.2-118-gdfb68ce",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/serf",
+			"Comment": "v0.8.1-78-gc20a0b1",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "git.inke.cn/BackendPlatform/golang",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/vmihailenco/msgpack",
+			"Comment": "v3.1.2-2-g02a2465",
+			"Rev": "master"
+		},
+		{
+			"ImportPath": "github.com/wvanbergen/kazoo-go",
+			"Rev": "master"
+		}
+	]
+}

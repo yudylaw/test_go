@@ -1,9 +1,0 @@
-[server]
-    bind=":18121"
-
-[log]
-  level="debug"
-  access_log="access.log"
-  error_log="error.log"
-  business_log="business.log"
-  stat_log="stat"

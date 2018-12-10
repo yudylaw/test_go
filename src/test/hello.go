@@ -16,13 +16,17 @@ import (
 	"reflect"
 	"regexp"
 	"runtime"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
 	"unsafe"
 )
 
-const MAX int = 100 //常量
+const (
+	MAX int = 100 //常量
+	MIN int = 200
+)
 
 //自定义类型
 type MyUint32 uint32
@@ -76,6 +80,8 @@ func testContext() {
 		fmt.Println("overslept")
 	case <-ctx.Done():
 		fmt.Println(ctx.Err()) // prints "context deadline exceeded"
+		//default:
+		//	fmt.Println("default...")
 	}
 }
 
@@ -85,6 +91,15 @@ func main() {
 	//		fmt.Printf("args, index:%d, arg:%s\n", index, arg)
 	//	}
 	fmt.Printf("hello goos:%s\n", runtime.GOOS)
+	//name := "北京市"
+	//has := strings.HasSuffix(name, "市")
+	//if has {
+	//	index := strings.LastIndex(name, "市")
+	//	city := string(name[0:index])
+	//	fmt.Println(city)
+	//} else {
+	//	fmt.Println("has is false")
+	//}
 	//
 	//	fmt.Println(time.Now().Unix())
 
@@ -115,8 +130,8 @@ func main() {
 	//	testJson()
 	//	testErrs()
 	//	testPanic()
-	testSelect()
-	//	testTimer()
+	//	testSelect()
+	//testTimer()
 	//	testFilePath()
 	//testDate()
 	//testReg()
@@ -124,9 +139,12 @@ func main() {
 	//	testSplit()
 	//	flag := CompareVersion("CA1.4.0_Iphone", "CA1.4.0_Iphone", "Iphone")
 	//	fmt.Println("flag=", flag)
-	//	testContext()
+	//testContext()
 	//	testReflect()
-	//	testNil()
+	testNil()
+	//	testSort()
+	//testPtr()
+	//testTime()
 	fmt.Println("end of main")
 }
 
@@ -233,7 +251,7 @@ func testMap() {
 	delete(kv, "age") //删除 key
 	fmt.Println(kv)
 
-	value, ok := kv["name"] //判断是否存在, 活取值
+	value, ok := kv["name"] //判断是否存在, 和取值
 
 	fmt.Println("value:%s, ok:%b", value, ok)
 }
@@ -402,7 +420,7 @@ func testChannel() {
 
 	//通道的方向，通过使用方向注解来限制协程对通道的操作
 	//	var send_only chan<- int        // channel can only receive data
-	//	var recv_only <-chan int        // channel can onley send data
+	//	var recv_only <-chan int        // channel can only send data
 
 	var myChan chan int = make(chan int)        // 无缓冲
 	var signalChan chan int = make(chan int, 2) // cap > 0, 有缓存信道
@@ -552,8 +570,9 @@ func testTimer() {
 
 	}()
 
-	ch := make(chan int)
+	ch := make(chan int) //无缓冲阻塞队列
 	ch <- 0
+	fmt.Println("end..")
 }
 
 func substr(s string, pos, length int) string {
@@ -666,6 +685,7 @@ func CompareVersion(sourceCV string, destCV string, OS string) bool {
 		return false
 	}
 
+	//atoi (表示ascii to integer)
 	sourceMajor, _ := strconv.Atoi(sourceVec[0])
 	sourceMinor, _ := strconv.Atoi(sourceVec[1])
 	sourceBuild, _ := strconv.Atoi(sourceVec[2])
@@ -749,6 +769,8 @@ func testNilError() error {
 }
 
 func testNil() {
+	//interface{} 包含：类型指针，值指针
+	//go语言坑之一
 	var val interface{} = nil //nil
 	if val == nil {
 		fmt.Println("val is nil")
@@ -788,4 +810,51 @@ func testNil() {
 	t := reflect.TypeOf(err)
 	v := reflect.ValueOf(err)
 	fmt.Printf("err.Type=%v, err.Value=%v\n", t, v)
+}
+
+//It returns 2*ceil(lg(n+1))
+func maxDepth(n int) int {
+	var depth int
+	for i := n; i > 0; i >>= 1 {
+		depth++
+	}
+	return depth * 2
+}
+
+func testSort() {
+	nums := []int{10, 7, 3, 11, 22, 90}
+	sort.Slice(nums, func(i, j int) bool {
+		return nums[i] > nums[j]
+	})
+	for _, v := range nums {
+		fmt.Println(v)
+	}
+}
+
+func testPtr() {
+	//&符号的意思是对变量取地址
+	//*符号的意思是对指针取值
+	var a int = 1
+	var b *int = &a  //取地址
+	var c **int = &b //取地址
+	var x int = *b
+	fmt.Println("a = ", a)
+	fmt.Println("&a = ", &a)
+	fmt.Println("*&a = ", *&a) //*&可以抵消
+	fmt.Println("b = ", b)
+	fmt.Println("&b = ", &b)
+	fmt.Println("*&b = ", *&b)
+	fmt.Println("*b = ", *b)
+	fmt.Println("c = ", c)
+	fmt.Println("*c = ", *c)
+	fmt.Println("&c = ", &c)
+	fmt.Println("*&c = ", *&c)
+	fmt.Println("**c = ", **c)
+	fmt.Println("***&*&*&*&c = ", ***&*&*&*&*&c)
+	fmt.Println("x = ", x)
+}
+
+func testTime() {
+	now := time.Now()
+	fmt.Printf("%v", now)
 }

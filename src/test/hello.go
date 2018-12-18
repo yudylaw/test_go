@@ -123,7 +123,7 @@ func main() {
 	//	testStruct()
 	//	testInterface()
 	//	testIO();
-	//	 testHttp()
+	//testHttp()
 	//	testRange()
 	//	testScan()
 	//	testWrite()
@@ -141,10 +141,13 @@ func main() {
 	//	fmt.Println("flag=", flag)
 	//testContext()
 	//	testReflect()
-	testNil()
+	//testNil()
 	//	testSort()
 	//testPtr()
 	//testTime()
+	nums := []int{1, 2, 3}
+	nums = nums[1:]
+	fmt.Printf("nums=%v", nums)
 	fmt.Println("end of main")
 }
 
@@ -161,6 +164,8 @@ func testHttp() {
 
 func HelloServer(w http.ResponseWriter, req *http.Request) {
 	fmt.Println("Inside HelloServer handler")
+	value, err := ioutil.ReadAll(req.Body)
+	fmt.Printf("value=%v, err=%v", value, err)
 	fmt.Fprintf(w, "Hello,"+req.URL.Path[1:])
 }
 

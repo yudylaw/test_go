@@ -218,6 +218,32 @@ func levelOrder(root *TreeNode) [][]int {
 	return list
 }
 
+//插入二叉搜索树
+func insertIntoBST(root *TreeNode, val int) *TreeNode {
+	node := root
+	parent := root
+	newNode := &TreeNode{Val: val}
+	for node != nil {
+		parent = node
+		if val > node.Val {
+			//right tree
+			node = node.Right
+			if node == nil {
+				parent.Right = newNode
+				break
+			}
+		} else {
+			//left tree
+			node = node.Left
+			if node == nil {
+				parent.Left = newNode
+				break
+			}
+		}
+	}
+	return root
+}
+
 func reverseString(s string) string {
 	str := []byte{}
 	for i := len(s) - 1; i >= 0; i-- {
@@ -252,22 +278,35 @@ func main() {
 	//fmt.Printf("flag=%v", flag)
 
 	//二叉树 binary tree
-	n8 := &TreeNode{Val: 8}
-	n7 := &TreeNode{Val: 7, Right: n8}
-	n6 := &TreeNode{Val: 6}
-	n5 := &TreeNode{Val: 5, Left: n7}
-	n4 := &TreeNode{Val: 4}
-	n3 := &TreeNode{Val: 3, Right: n6}
-	n2 := &TreeNode{Val: 2, Left: n4, Right: n5}
-	root := &TreeNode{Val: 1, Left: n2, Right: n3}
-
-	list := levelOrder(root)
-	fmt.Printf("list=%v", list)
+	//n8 := &TreeNode{Val: 8}
+	//n7 := &TreeNode{Val: 7, Right: n8}
+	//n6 := &TreeNode{Val: 6}
+	//n5 := &TreeNode{Val: 5, Left: n7}
+	//n4 := &TreeNode{Val: 4}
+	//n3 := &TreeNode{Val: 3, Right: n6}
+	//n2 := &TreeNode{Val: 2, Left: n4, Right: n5}
+	//root := &TreeNode{Val: 1, Left: n2, Right: n3}
+	//
+	//list := levelOrder(root)
+	//fmt.Printf("list=%v", list)
 	//newTree := invertTree(root)
 	//list := inorderTraversal(newTree)
 	//for _, val := range list {
 	//	fmt.Printf("%d,", val)
 	//}
+
+	//二叉搜索树 binary search tree(BST)
+	n7 := &TreeNode{Val: 7}
+	n3 := &TreeNode{Val: 3}
+	n1 := &TreeNode{Val: 1}
+	n2 := &TreeNode{Val: 2, Left: n1, Right: n3}
+	root := &TreeNode{Val: 4, Left: n2, Right: n7}
+
+	newTree := insertIntoBST(root, 5)
+	list := inorderTraversal(newTree)
+	for _, val := range list {
+		fmt.Printf("%d,", val)
+	}
 
 	//str := string("ab,cdff :f")
 	//newStr := reverseString(str)

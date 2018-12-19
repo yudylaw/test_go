@@ -244,6 +244,30 @@ func insertIntoBST(root *TreeNode, val int) *TreeNode {
 	return root
 }
 
+func searchBST(root *TreeNode, val int) *TreeNode {
+	node := root
+	parent := root
+	flag := false
+	for node != nil {
+		parent = node
+		if val > node.Val {
+			//right tree
+			node = node.Right
+		} else if val < node.Val {
+			//left tree
+			node = node.Left
+		} else {
+			flag = true
+			break
+		}
+	}
+	if flag {
+		return parent
+	} else {
+		return nil
+	}
+}
+
 func reverseString(s string) string {
 	str := []byte{}
 	for i := len(s) - 1; i >= 0; i-- {
@@ -302,7 +326,8 @@ func main() {
 	n2 := &TreeNode{Val: 2, Left: n1, Right: n3}
 	root := &TreeNode{Val: 4, Left: n2, Right: n7}
 
-	newTree := insertIntoBST(root, 5)
+	//newTree := insertIntoBST(root, 5)
+	newTree := searchBST(root, 2)
 	list := inorderTraversal(newTree)
 	for _, val := range list {
 		fmt.Printf("%d,", val)

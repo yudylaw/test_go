@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
 	"strings"
 	"time"
@@ -268,6 +269,40 @@ func searchBST(root *TreeNode, val int) *TreeNode {
 	}
 }
 
+func isBalanced(root *TreeNode) bool {
+	//平衡二叉树条件:
+	//1:左右子树的高度差不大于1
+	//2:并且左右子树都是平衡二叉树
+	if root == nil {
+		return true
+	}
+	leftHigh := treeHigh(root.Left)
+	rightHigh := treeHigh(root.Right)
+	diff := leftHigh - rightHigh
+	//左右子树的高度差不大于1
+	if math.Abs(float64(diff)) > 1 {
+		return false
+	} else {
+		//并且左右子树都是平衡二叉树
+		return isBalanced(root.Left) && isBalanced(root.Right)
+	}
+}
+
+func treeHigh(root *TreeNode) int {
+	//需要算上父节点高度 +1
+	if root != nil {
+		lhigh := treeHigh(root.Left)
+		rhigh := treeHigh(root.Right)
+		if lhigh > rhigh {
+			return lhigh + 1
+		} else {
+			return rhigh + 1
+		}
+	} else {
+		return 1
+	}
+}
+
 func reverseString(s string) string {
 	str := []byte{}
 	for i := len(s) - 1; i >= 0; i-- {
@@ -326,12 +361,15 @@ func main() {
 	n2 := &TreeNode{Val: 2, Left: n1, Right: n3}
 	root := &TreeNode{Val: 4, Left: n2, Right: n7}
 
+	flag := isBalanced(root)
+	fmt.Printf("flag=%v", flag)
+
 	//newTree := insertIntoBST(root, 5)
-	newTree := searchBST(root, 2)
-	list := inorderTraversal(newTree)
-	for _, val := range list {
-		fmt.Printf("%d,", val)
-	}
+	//newTree := searchBST(root, 2)
+	//list := inorderTraversal(newTree)
+	//for _, val := range list {
+	//	fmt.Printf("%d,", val)
+	//}
 
 	//str := string("ab,cdff :f")
 	//newStr := reverseString(str)

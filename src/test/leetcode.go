@@ -276,8 +276,8 @@ func isBalanced(root *TreeNode) bool {
 	if root == nil {
 		return true
 	}
-	leftHigh := treeHigh(root.Left)
-	rightHigh := treeHigh(root.Right)
+	leftHigh := maxTreeDepth(root.Left)
+	rightHigh := maxTreeDepth(root.Right)
 	diff := leftHigh - rightHigh
 	//左右子树的高度差不大于1
 	if math.Abs(float64(diff)) > 1 {
@@ -288,18 +288,18 @@ func isBalanced(root *TreeNode) bool {
 	}
 }
 
-func treeHigh(root *TreeNode) int {
+func maxTreeDepth(root *TreeNode) int {
 	//需要算上父节点高度 +1
 	if root != nil {
-		lhigh := treeHigh(root.Left)
-		rhigh := treeHigh(root.Right)
+		lhigh := maxTreeDepth(root.Left)
+		rhigh := maxTreeDepth(root.Right)
 		if lhigh > rhigh {
 			return lhigh + 1
 		} else {
 			return rhigh + 1
 		}
 	} else {
-		return 1
+		return 0
 	}
 }
 

@@ -325,6 +325,16 @@ func minDepth(root *TreeNode) int {
 	}
 }
 
+func countNodes(root *TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	if root.Left == nil {
+		return 1
+	}
+	return countNodes(root.Left) + countNodes(root.Right) + 1
+}
+
 func reverseString(s string) string {
 	str := []byte{}
 	for i := len(s) - 1; i >= 0; i-- {

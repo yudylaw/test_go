@@ -303,6 +303,28 @@ func maxTreeDepth(root *TreeNode) int {
 	}
 }
 
+func minDepth(root *TreeNode) int {
+	//需要算上父节点高度 +1
+	if root != nil {
+		//考虑左右子树为空的情况
+		if root.Left == nil {
+			return minDepth(root.Right) + 1
+		}
+		if root.Right == nil {
+			return minDepth(root.Left) + 1
+		}
+		lhigh := minDepth(root.Left)
+		rhigh := minDepth(root.Right)
+		if lhigh > rhigh {
+			return rhigh + 1
+		} else {
+			return lhigh + 1
+		}
+	} else {
+		return 0
+	}
+}
+
 func reverseString(s string) string {
 	str := []byte{}
 	for i := len(s) - 1; i >= 0; i-- {

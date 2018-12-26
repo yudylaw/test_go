@@ -326,6 +326,9 @@ func minDepth(root *TreeNode) int {
 }
 
 func countNodes(root *TreeNode) int {
+	//统计完全二叉树的节点数
+	//1：除最下一层外，其余层都是满节点
+	//2：最下一层所有节点都集中在树的左边，接点数范围：【1，2^n】
 	if root == nil {
 		return 0
 	}
@@ -341,6 +344,55 @@ func reverseString(s string) string {
 		str = append(str, s[i])
 	}
 	return string(str[:])
+}
+
+type ListNode struct {
+	Val  int
+	Next *ListNode
+}
+
+//找到两个单链表相交的起始节点
+func getIntersectionNode(headA, headB *ListNode) *ListNode {
+	if headA == nil || headB == nil {
+		return nil
+	}
+	if headA == headB {
+		return headA
+	}
+	var sizeA, sizeB int
+	for h := headA; h != nil; h = h.Next {
+		sizeA++
+	}
+	for h := headB; h != nil; h = h.Next {
+		sizeB++
+	}
+	step := math.Abs(float64(sizeA - sizeB))
+	var longer *ListNode
+	var shorter *ListNode
+	if sizeA > sizeB {
+		longer = headA
+		shorter = headB
+	} else {
+		longer = headB
+		shorter = headA
+	}
+	var l *ListNode
+	for l = longer; step > 0 && l != nil; l = l.Next {
+		step--
+	}
+	for s := shorter; s != nil; s = s.Next {
+		if s == l {
+			return s
+		}
+		if s.Next == nil || l.Next == nil {
+			return nil
+		}
+		if s.Next == l.Next {
+			return s.Next
+		}
+		l = l.Next
+	}
+	return nil
 }
 
 func main() {

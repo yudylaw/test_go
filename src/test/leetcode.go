@@ -352,6 +352,29 @@ type ListNode struct {
 }
 
 //找到两个单链表相交的起始节点
+func getIntersectionNodeNice(headA, headB *ListNode) *ListNode {
+	if headA == nil || headB == nil {
+		return nil
+	}
+	pA := headA
+	pB := headB
+	//循环走2次，抹去长度差(a+b=b+a)
+	for pA != pB {
+		if pA == nil {
+			pA = headB
+		} else {
+			pA = pA.Next
+		}
+		if pB == nil {
+			pB = headA
+		} else {
+			pB = pB.Next
+		}
+	}
+	return pA
+}
+
+//找到两个单链表相交的起始节点
 func getIntersectionNode(headA, headB *ListNode) *ListNode {
 	if headA == nil || headB == nil {
 		return nil

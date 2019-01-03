@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
+	"sort"
 	"strings"
 	"time"
 	"unicode"
@@ -418,6 +419,44 @@ func getIntersectionNode(headA, headB *ListNode) *ListNode {
 	return nil
 }
 
+//三数之和等于0的问题
+func threeSum(nums []int) [][]int {
+	//排序
+	sort.Ints(nums)
+	fmt.Printf("sorted nums=%v\n", nums)
+	var result [][]int
+	for i, _ := range nums {
+		//考虑等值问题
+		if i == 0 || nums[i] > nums[i-1] {
+			l := i + 1
+			r := len(nums) - 1
+			s := 0
+			for l < r {
+				//转化为两数之和问题，使用双指针法
+				s = nums[i] + nums[l] + nums[r]
+				if s == 0 {
+					rs := []int{nums[i], nums[l], nums[r]}
+					result = append(result, rs)
+					l = l + 1
+					r = r - 1
+					//考虑等值问题
+					for l < r && nums[l] == nums[l-1] {
+						l = l + 1
+					}
+					for l < r && nums[r] == nums[r+1] {
+						r = r - 1
+					}
+				} else if s > 0 {
+					r = r - 1
+				} else {
+					l = l + 1
+				}
+			}
+		}
+	}
+	return result
+}
+
 func main() {
 	fmt.Println("hello leetcode.")
 	//nums := []int{1, 5, 7, 2, 3, 4}
@@ -462,14 +501,14 @@ func main() {
 	//}
 
 	//二叉搜索树 binary search tree(BST)
-	n7 := &TreeNode{Val: 7}
-	n3 := &TreeNode{Val: 3}
-	n1 := &TreeNode{Val: 1}
-	n2 := &TreeNode{Val: 2, Left: n1, Right: n3}
-	root := &TreeNode{Val: 4, Left: n2, Right: n7}
-
-	flag := isBalanced(root)
-	fmt.Printf("flag=%v", flag)
+	//n7 := &TreeNode{Val: 7}
+	//n3 := &TreeNode{Val: 3}
+	//n1 := &TreeNode{Val: 1}
+	//n2 := &TreeNode{Val: 2, Left: n1, Right: n3}
+	//root := &TreeNode{Val: 4, Left: n2, Right: n7}
+	//
+	//flag := isBalanced(root)
+	//fmt.Printf("flag=%v", flag)
 
 	//newTree := insertIntoBST(root, 5)
 	//newTree := searchBST(root, 2)
@@ -481,4 +520,8 @@ func main() {
 	//str := string("ab,cdff :f")
 	//newStr := reverseString(str)
 	//fmt.Printf("%v", newStr)
+
+	nums := []int{-1, 2, 4, -7, 0, 3, -6, -4}
+	rs := threeSum(nums)
+	fmt.Printf("rs=%v", rs)
 }

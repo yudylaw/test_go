@@ -476,6 +476,36 @@ func removeDuplicates(nums []int) int {
 	return size
 }
 
+//回溯算法
+func combinationSum(candidates []int, target int) [][]int {
+	if len(candidates) == 0 || target < 0 {
+		return nil
+	}
+	sort.Ints(candidates)
+	//var 不行
+	result := make([][]int, 0)
+	temp := make([]int, 0)
+	dfs(candidates, target, &temp, &result, 0)
+	return result
+}
+
+func dfs(candidates []int, target int, temp *[]int, result *[][]int, level int) {
+	if target == 0 {
+		//符合条件
+		var tmp []int
+		tmp = append(tmp, *temp...) //数组值copy
+		//append 改变数组长度，必须使用 slice 指针
+		*result = append(*result, tmp)
+	}
+
+	for i := level; i < len(candidates) && target >= candidates[i]; i++ {
+		//target>=candidates[i]是剪枝操作
+		*temp = append(*temp, candidates[i])
+		dfs(candidates, target-candidates[i], temp, result, i)
+		*temp = (*temp)[:len(*temp)-1]
+	}
+}
+
 func main() {
 	fmt.Println("hello leetcode.")
 	//nums := []int{1, 5, 7, 2, 3, 4}
@@ -542,7 +572,7 @@ func main() {
 
 	//nums := []int{-1, 2, 4, -7, 0, 3, -6, -4}nums
 	//rs := threeSum(nums)
-	nums := []int{1, 2, 2, 2, 3, 4, 5, 5, 5, 6, 11, 12}
-	size := removeDuplicates(nums)
-	fmt.Printf("nums=%v, size=%d", nums, size)
+	nums := []int{1, 2, 3, 4, 5, 6, 11, 12}
+	result := combinationSum(nums, 4)
+	fmt.Printf("result=%v", result)
 }

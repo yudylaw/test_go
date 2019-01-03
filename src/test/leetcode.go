@@ -457,6 +457,25 @@ func threeSum(nums []int) [][]int {
 	return result
 }
 
+//删除数组重复项
+func removeDuplicates(nums []int) int {
+	if len(nums) == 0 {
+		return 0
+	}
+
+	size := 1
+	for i, j := 0, 1; i < len(nums); i++ {
+		for j < len(nums) && nums[i] == nums[j] {
+			j = j + 1
+		}
+		if j < len(nums) {
+			nums[i+1] = nums[j]
+			size = size + 1
+		}
+	}
+	return size
+}
+
 func main() {
 	fmt.Println("hello leetcode.")
 	//nums := []int{1, 5, 7, 2, 3, 4}
@@ -521,7 +540,9 @@ func main() {
 	//newStr := reverseString(str)
 	//fmt.Printf("%v", newStr)
 
-	nums := []int{-1, 2, 4, -7, 0, 3, -6, -4}
-	rs := threeSum(nums)
-	fmt.Printf("rs=%v", rs)
+	//nums := []int{-1, 2, 4, -7, 0, 3, -6, -4}nums
+	//rs := threeSum(nums)
+	nums := []int{1, 2, 2, 2, 3, 4, 5, 5, 5, 6, 11, 12}
+	size := removeDuplicates(nums)
+	fmt.Printf("nums=%v, size=%d", nums, size)
 }

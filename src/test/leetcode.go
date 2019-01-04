@@ -476,8 +476,9 @@ func removeDuplicates(nums []int) int {
 	return size
 }
 
-//回溯算法
+//组合总和
 func combinationSum(candidates []int, target int) [][]int {
+	//回溯算法
 	if len(candidates) == 0 || target < 0 {
 		return nil
 	}
@@ -508,6 +509,7 @@ func dfs(candidates []int, target int, temp *[]int, result *[][]int, level int) 
 	}
 }
 
+//最大子序和
 func maxSubArray(nums []int) int {
 	//复杂度：时间复杂度O(n)，空间复杂度O(n)
 	//先遍历j, 计算[0,j]的和
@@ -538,9 +540,10 @@ func maxSubArray(nums []int) int {
 }
 
 func maxSubArrayNice(nums []int) int {
-	//设all[i]为子数组A[0]…..A[i]的最大和
-	//start[i]为子数组A[0]…..A[i]且包含A[i]的的最大和
-	//那么如何求出all[i]呢，观察可得，all[i] = max{all[i-1], start[i-1] + A[i], A[i]}
+	//f(i)表示[0,i]最大连续子数组和
+	//假如i=0或者f[i-1] <= 0，则f(i)=nums[i]
+	//假如i>0且f[i-1] > 0，则f(i)=f(i-1) + nums[i]
+	//maxSum=max(f(0),...,f(i))
 	if len(nums) == 0 {
 		return 0
 	}
@@ -548,7 +551,7 @@ func maxSubArrayNice(nums []int) int {
 	maxSum := nums[0]
 
 	for i := 1; i < len(nums); i++ {
-		if maxTmpSum+nums[i] > nums[i] { // or maxTmpSum > 0
+		if maxTmpSum > 0 {
 			maxTmpSum = maxTmpSum + nums[i]
 		} else {
 			maxTmpSum = nums[i]

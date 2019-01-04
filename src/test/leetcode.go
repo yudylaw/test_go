@@ -491,9 +491,11 @@ func combinationSum(candidates []int, target int) [][]int {
 
 func dfs(candidates []int, target int, temp *[]int, result *[][]int, level int) {
 	if target == 0 {
-		//符合条件
-		var tmp []int
-		tmp = append(tmp, *temp...) //数组值copy
+		//数组深度copy
+		//var tmp []int
+		//tmp = append(tmp, *temp...)
+		tmp := make([]int, len(*temp))
+		copy(tmp, *temp)
 		//append 改变数组长度，必须使用 slice 指针
 		*result = append(*result, tmp)
 	}
@@ -504,6 +506,59 @@ func dfs(candidates []int, target int, temp *[]int, result *[][]int, level int) 
 		dfs(candidates, target-candidates[i], temp, result, i)
 		*temp = (*temp)[:len(*temp)-1]
 	}
+}
+
+func maxSubArray(nums []int) int {
+	//复杂度：时间复杂度O(n)，空间复杂度O(n)
+	//先遍历j, 计算[0,j]的和
+	//S[i, j] = sum[j] - sum[i-1]
+	//遍历j的时候，我们使得sum[i-1]保持最小，计算当前最大和，最后得出全局最大和
+	sumArray := make([]int, 0)
+	sum := 0
+	for _, v := range nums {
+		sum = sum + v
+		sumArray = append(sumArray, sum)
+	}
+
+	fmt.Printf("sumArray=%v", sumArray)
+	minSum := 0
+	maxSum := sumArray[0]
+
+	for i := 1; i < len(nums); i++ {
+		if sumArray[i-1] < minSum {
+			//找到最新minSum
+			minSum = sumArray[i-1]
+		}
+		if sumArray[i]-minSum > maxSum {
+			//找出最大和
+			maxSum = sumArray[i] - minSum
+		}
+	}
+	return maxSum
+}
+
+func maxSubArrayNice(nums []int) int {
+	//设all[i]为子数组A[0]…..A[i]的最大和
+	//start[i]为子数组A[0]…..A[i]且包含A[i]的的最大和
+	//那么如何求出all[i]呢，观察可得，all[i] = max{all[i-1], start[i-1] + A[i], A[i]}
+	if len(nums) == 0 {
+		return 0
+	}
+	maxTmpSum := nums[0]
+	maxSum := nums[0]
+
+	for i := 1; i < len(nums); i++ {
+		if maxTmpSum+nums[i] > nums[i] { // or maxTmpSum > 0
+			maxTmpSum = maxTmpSum + nums[i]
+		} else {
+			maxTmpSum = nums[i]
+		}
+		if maxSum < maxTmpSum {
+			maxSum = maxTmpSum
+		}
+	}
+
+	return maxSum
 }
 
 func main() {
@@ -572,7 +627,10 @@ func main() {
 
 	//nums := []int{-1, 2, 4, -7, 0, 3, -6, -4}nums
 	//rs := threeSum(nums)
-	nums := []int{1, 2, 3, 4, 5, 6, 11, 12}
-	result := combinationSum(nums, 4)
+	//nums := []int{1, 2, 3, 4, 5, 6, 11, 12}
+	//result := combinationSum(nums, 4)
+
+	nums := []int{-2, 1, -3, 4, -1, 2, 1, -5, 4}
+	result := maxSubArrayNice(nums)
 	fmt.Printf("result=%v", result)
 }

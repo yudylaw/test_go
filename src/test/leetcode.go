@@ -564,6 +564,28 @@ func maxSubArrayNice(nums []int) int {
 	return maxSum
 }
 
+//n × n 的二维矩阵90度旋转
+func rotate(matrix [][]int) {
+	if len(matrix) == 0 {
+		return
+	}
+	n := len(matrix)
+	m := (n - 1) / 2
+	//策略：从矩阵外往内依次旋转
+	//i:行
+	//j:列
+	for i := 0; i <= m; i++ {
+		for j := i; j < n-1-i; j++ {
+			//4个边，依次复制
+			temp := matrix[i][j]
+			matrix[i][j] = matrix[n-1-j][i]
+			matrix[n-1-j][i] = matrix[n-1-i][n-1-j]
+			matrix[n-1-i][n-1-j] = matrix[j][n-1-i]
+			matrix[j][n-1-i] = temp
+		}
+	}
+}
+
 func main() {
 	fmt.Println("hello leetcode.")
 	//nums := []int{1, 5, 7, 2, 3, 4}

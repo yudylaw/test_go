@@ -419,6 +419,50 @@ func getIntersectionNode(headA, headB *ListNode) *ListNode {
 	return nil
 }
 
+/**
+ * Definition for singly-linked list.
+ * type ListNode struct {
+ *     Val int
+ *     Next *ListNode
+ * }
+ */
+func reverseList(head *ListNode) *ListNode {
+	var last *ListNode = nil
+	next := head
+
+	for next != nil {
+		next := head.Next
+		head.Next = last
+		last = head
+		if next != nil {
+			head = next
+		}
+	}
+	return head
+}
+
+func reverseListEasy(head *ListNode) *ListNode {
+	if head == nil || head.Next == nil {
+		return head
+	}
+
+	//一个容易理解的版本
+	pre := head
+	cur := head.Next
+	var next *ListNode
+	head.Next = nil
+
+	//同时移动：pre,cur,next3个节点，并完成赋值
+	for cur != nil {
+		next = cur.Next
+		cur.Next = pre
+		pre = cur
+		cur = next
+	}
+
+	return pre
+}
+
 //三数之和等于0的问题
 func threeSum(nums []int) [][]int {
 	//排序

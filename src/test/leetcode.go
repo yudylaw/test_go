@@ -463,6 +463,34 @@ func reverseListEasy(head *ListNode) *ListNode {
 	return pre
 }
 
+func removeElements(head *ListNode, val int) *ListNode {
+	if head == nil {
+		return nil
+	}
+
+	var pre *ListNode = nil
+	cur := head
+
+	for cur != nil {
+		if cur.Val == val {
+			if pre != nil {
+				pre.Next = cur.Next
+			} else {
+				pre = cur.Next
+			}
+			//处理head删除
+			if cur == head {
+				head = cur.Next
+			}
+			//销毁cur
+		} else {
+			pre = cur
+		}
+		cur = cur.Next
+	}
+	return head
+}
+
 //三数之和等于0的问题
 func threeSum(nums []int) [][]int {
 	//排序

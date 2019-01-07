@@ -499,6 +499,36 @@ func deleteNode(node *ListNode) {
 	node.Next = node.Next.Next
 }
 
+//合并有序链表
+func mergeTwoLists(l1 *ListNode, l2 *ListNode) *ListNode {
+	//新建head节点
+	head := &ListNode{}
+	//当前节点
+	cur := head
+
+	for l1 != nil && l2 != nil {
+		if l1.Val < l2.Val {
+			cur.Next = l1
+			cur = cur.Next
+			l1 = l1.Next
+		} else {
+			cur.Next = l2
+			cur = cur.Next
+			l2 = l2.Next
+		}
+	}
+
+	if l1 == nil {
+		cur.Next = l2
+	}
+
+	if l2 == nil {
+		cur.Next = l1
+	}
+
+	return head.Next
+}
+
 //三数之和等于0的问题
 func threeSum(nums []int) [][]int {
 	//排序

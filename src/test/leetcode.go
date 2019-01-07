@@ -441,6 +441,7 @@ func reverseList(head *ListNode) *ListNode {
 	return head
 }
 
+//链表翻转
 func reverseListEasy(head *ListNode) *ListNode {
 	if head == nil || head.Next == nil {
 		return head
@@ -463,6 +464,7 @@ func reverseListEasy(head *ListNode) *ListNode {
 	return pre
 }
 
+//移除链表元素
 func removeElements(head *ListNode, val int) *ListNode {
 	if head == nil {
 		return nil
@@ -489,6 +491,12 @@ func removeElements(head *ListNode, val int) *ListNode {
 		cur = cur.Next
 	}
 	return head
+}
+
+//删除链表指定节点
+func deleteNode(node *ListNode) {
+	node.Val = node.Next.Val
+	node.Next = node.Next.Next
 }
 
 //三数之和等于0的问题

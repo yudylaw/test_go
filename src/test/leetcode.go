@@ -499,6 +499,14 @@ func deleteNode(node *ListNode) {
 	node.Next = node.Next.Next
 }
 
+func mergeKLists(lists []*ListNode) *ListNode {
+	var head *ListNode
+	for i := 0; i < len(lists); i++ {
+		head = mergeTwoLists(head, lists[i])
+	}
+	return head
+}
+
 //合并有序链表
 func mergeTwoLists(l1 *ListNode, l2 *ListNode) *ListNode {
 	//新建head节点

@@ -39,6 +39,19 @@ func (this *MyLinkedList) AddAtHead(val int) {
 	}
 }
 
+func (this *MyLinkedList) DeleteAtHead() {
+	tmp := this.Head
+	if tmp == nil {
+		return
+	}
+	this.Head = tmp.Next
+	tmp.Next = nil
+	if this.Head == nil {
+		this.Tail = nil
+	}
+	this.Len = this.Len - 1
+}
+
 /** Append a node of value val to the last element of the linked list. */
 func (this *MyLinkedList) AddAtTail(val int) {
 	node := &ListedNode{Val: val}
@@ -67,10 +80,12 @@ func (this *MyLinkedList) AddAtIndex(index int, val int) {
 		return
 	}
 	pre := this.Head
-	for i, cur := 0, this.Head; cur != nil; cur, i = cur.Next, i+1 {
+	for i, cur := 1, this.Head.Next; cur != nil; cur, i = cur.Next, i+1 {
 		if i == index {
 			node := &ListedNode{Val: val, Next: cur}
-			pre.Next = node
+			if pre != nil {
+				pre.Next = node
+			}
 			this.Len = this.Len + 1
 			return
 		}
@@ -83,13 +98,23 @@ func (this *MyLinkedList) DeleteAtIndex(index int) {
 	if index < 0 || index >= this.Len {
 		return
 	}
+	if index == 0 {
+		this.DeleteAtHead()
+		return
+	}
 	pre := this.Head
-	for i, cur := 0, this.Head; cur != nil; cur, i = cur.Next, i+1 {
+	for i, cur := 1, this.Head.Next; cur != nil; cur, i = cur.Next, i+1 {
 		if i == index {
 			if pre != nil {
 				pre.Next = cur.Next
 			}
-			cur.Next = nil
+			if cur.Next == nil {
+				//delete tail node and the same time not head node
+				pre.Next = nil
+				this.Tail = pre
+			} else {
+				cur.Next = nil
+			}
 			this.Len = this.Len - 1
 			return
 		}

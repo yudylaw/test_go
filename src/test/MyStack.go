@@ -4,6 +4,7 @@ import "container/list"
 
 type MyStack struct {
 	//用队列实现栈，只能使用队列的基本操作：push to back, peek/pop from front, size, 和 is empty
+	//队列 FIFO，栈：LIFO
 	Queue *list.List
 }
 

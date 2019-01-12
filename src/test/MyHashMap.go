@@ -40,13 +40,52 @@ func (this *MyHashMap) resize() {
 	newKeys := make([]int, 2*this.cap)
 	newValues := make([]int, 2*this.cap)
 	newList := make([]*list.List, 2*this.cap)
-	copy(newKeys, this.keys)
-	copy(newValues, this.values)
-	copy(newList, this.linkedList)
 	this.cap = 2 * this.cap
+	//rehash
+	for i, key := range this.keys {
+		j := this.getIndex(key)
+		if newKeys[j] == 0 {
+			newKeys[j] = key
+			newValues[j] = this.values[i]
+			continue
+		} else {
+			if newKeys[j] != key {
+				//冲突
+				if newList[j] == nil {
+					newList[j] = list.New()
+				}
+				node := KV{Key: key, Value: this.values[i]}
+				newList[j].PushBack(node)
+			}
+		}
+		nodes := this.linkedList[i]
+		if nodes != nil {
+			for node := nodes.Front(); node != nil; node = node.Next() {
+				kv := node.Value.(KV)
+				k := this.getIndex(kv.Key)
+				if newKeys[k] == 0 {
+					//插入新位置
+					newKeys[k] = kv.Key
+					newValues[k] = kv.Value
+				} else {
+					if newKeys[k] != kv.Key {
+						//冲突
+						if newList[k] == nil {
+							newList[k] = list.New()
+						}
+						newList[k].PushBack(node.Value)
+					}
+				}
+			}
+			if nodes.Len() == 0 {
+				this.linkedList[i] = nil
+			}
+		}
+	}
 	this.keys = newKeys
 	this.values = newValues
 	this.linkedList = newList
+	//释放存储 TODO
 }
 
 func (this *MyHashMap) getIndex(key int) int {
@@ -63,9 +102,9 @@ func (this *MyHashMap) Put(key int, value int) {
 	k := this.keys[index]
 	if k == 0 {
 		//直接插入
-		index = this.getIndex(key)
 		this.keys[index] = key
 		this.values[index] = value
+		this.len = this.len + 1
 		return
 	}
 	if k == key {
@@ -79,6 +118,7 @@ func (this *MyHashMap) Put(key int, value int) {
 			//插入队尾
 			kv := KV{Key: key, Value: value}
 			this.linkedList[index].PushBack(kv)
+			this.len = this.len + 1
 		} else {
 			for node := nodes.Front(); node != nil; node = node.Next() {
 				kv := node.Value.(KV)
@@ -92,6 +132,7 @@ func (this *MyHashMap) Put(key int, value int) {
 			//插入队尾
 			kv := KV{Key: key, Value: value}
 			nodes.PushBack(kv)
+			this.len = this.len + 1
 		}
 	}
 }
@@ -145,6 +186,7 @@ func (this *MyHashMap) Remove(key int) {
 			this.keys[index] = 0
 			this.values[index] = 0
 		}
+		this.len = this.len - 1
 	} else {
 		//key冲突
 		nodes := this.linkedList[index]
@@ -156,6 +198,7 @@ func (this *MyHashMap) Remove(key int) {
 					if nodes.Len() == 0 {
 						this.linkedList[index] = nil
 					}
+					this.len = this.len - 1
 					return
 				}
 			}

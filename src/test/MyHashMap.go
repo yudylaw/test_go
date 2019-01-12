@@ -2,7 +2,6 @@ package main
 
 import (
 	"container/list"
-	"fmt"
 )
 
 type MyHashMap struct {
@@ -10,6 +9,7 @@ type MyHashMap struct {
 	values     []int
 	len        int
 	cap        int
+	loadFactor float32
 	linkedList []*list.List
 }
 
@@ -20,13 +20,11 @@ type KV struct {
 
 /** Initialize your data structure here. */
 func Constructor5() MyHashMap {
-	hashMap := MyHashMap{len: 0}
+	hashMap := MyHashMap{len: 0, loadFactor: 0.75}
 	capacity := 16
 	hashMap.keys = make([]int, capacity)
 	hashMap.values = make([]int, capacity)
-	//for i, _ := range hashMap.keys {
-	//	hashMap.keys[i] = -1
-	//}
+	hashMap.linkedList = make([]*list.List, capacity)
 	hashMap.cap = capacity
 	return hashMap
 }
@@ -41,14 +39,14 @@ func (this *MyHashMap) resize() {
 	//扩容2倍
 	newKeys := make([]int, 2*this.cap)
 	newValues := make([]int, 2*this.cap)
-	//for i, _ := range newKeys {
-	//	newKeys[i] = -1
-	//}
+	newList := make([]*list.List, 2*this.cap)
 	copy(newKeys, this.keys)
 	copy(newValues, this.values)
+	copy(newList, this.linkedList)
 	this.cap = 2 * this.cap
 	this.keys = newKeys
 	this.values = newValues
+	this.linkedList = newList
 }
 
 func (this *MyHashMap) getIndex(key int) int {
@@ -58,16 +56,21 @@ func (this *MyHashMap) getIndex(key int) int {
 
 /** value will always be non-negative. */
 func (this *MyHashMap) Put(key int, value int) {
+	if this.len >= int(this.loadFactor*float32(this.cap)) {
+		this.resize()
+	}
 	index := this.getIndex(key)
 	k := this.keys[index]
-	if k == key {
-		if this.len == this.cap {
-			this.resize()
-		}
-		//rehash
+	if k == 0 {
+		//直接插入
 		index = this.getIndex(key)
+		this.keys[index] = key
 		this.values[index] = value
 		return
+	}
+	if k == key {
+		//更新
+		this.values[index] = value
 	} else {
 		//key冲突
 		nodes := this.linkedList[index]
@@ -126,30 +129,37 @@ func (this *MyHashMap) Remove(key int) {
 		return
 	}
 	if k == key {
-		//BUG 存在链表的情况如何处理
-		this.keys[index] = 0
-		this.values[index] = 0
+		nodes := this.linkedList[index]
+		if nodes != nil {
+			//存在链表
+			node := nodes.Front()
+			//移动节点
+			this.keys[index] = node.Value.(KV).Key
+			this.values[index] = node.Value.(KV).Value
+			nodes.Remove(node)
+			if nodes.Len() == 0 {
+				this.linkedList[index] = nil
+			}
+		} else {
+			//不存在链表
+			this.keys[index] = 0
+			this.values[index] = 0
+		}
 	} else {
 		//key冲突
+		nodes := this.linkedList[index]
+		if nodes != nil {
+			for node := nodes.Front(); node != nil; node = node.Next() {
+				kv := node.Value.(KV)
+				if kv.Key == key {
+					nodes.Remove(node)
+					if nodes.Len() == 0 {
+						this.linkedList[index] = nil
+					}
+					return
+				}
+			}
 
+		}
 	}
-}
-
-/**
- * Your MyHashMap object will be instantiated and called as such:
- * obj := Constructor();
- * obj.Put(key,value);
- * param_2 := obj.Get(key);
- * obj.Remove(key);
- */
-
-func main() {
-	obj := Constructor5()
-	obj.Put(1, 2)
-	value := obj.Get(1)
-	fmt.Printf("value=%d\n", value)
-	obj.Remove(1)
-	value = obj.Get(2)
-	fmt.Printf("value=%d\n", value)
-
 }

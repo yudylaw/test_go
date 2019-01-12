@@ -43,11 +43,13 @@ func (this *MyHashMap) resize() {
 	this.cap = 2 * this.cap
 	//rehash
 	for i, key := range this.keys {
+		if key == 0 {
+			continue
+		}
 		j := this.getIndex(key)
 		if newKeys[j] == 0 {
 			newKeys[j] = key
 			newValues[j] = this.values[i]
-			continue
 		} else {
 			if newKeys[j] != key {
 				//冲突
@@ -77,9 +79,7 @@ func (this *MyHashMap) resize() {
 					}
 				}
 			}
-			if nodes.Len() == 0 {
-				this.linkedList[i] = nil
-			}
+			this.linkedList[i] = nil
 		}
 	}
 	this.keys = newKeys

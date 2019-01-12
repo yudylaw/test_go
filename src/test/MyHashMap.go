@@ -18,11 +18,16 @@ type KV struct {
 	Value int
 }
 
+const NULL_KEY int = -1
+
 /** Initialize your data structure here. */
 func Constructor5() MyHashMap {
 	hashMap := MyHashMap{len: 0, loadFactor: 0.75}
 	capacity := 16
 	hashMap.keys = make([]int, capacity)
+	for i, _ := range hashMap.keys {
+		hashMap.keys[i] = NULL_KEY
+	}
 	hashMap.values = make([]int, capacity)
 	hashMap.linkedList = make([]*list.List, capacity)
 	hashMap.cap = capacity
@@ -38,16 +43,19 @@ func (this *MyHashMap) hashCode(key int) int {
 func (this *MyHashMap) resize() {
 	//扩容2倍
 	newKeys := make([]int, 2*this.cap)
+	for i, _ := range newKeys {
+		newKeys[i] = NULL_KEY
+	}
 	newValues := make([]int, 2*this.cap)
 	newList := make([]*list.List, 2*this.cap)
 	this.cap = 2 * this.cap
 	//rehash
 	for i, key := range this.keys {
-		if key == 0 {
+		if key == NULL_KEY {
 			continue
 		}
 		j := this.getIndex(key)
-		if newKeys[j] == 0 {
+		if newKeys[j] == NULL_KEY {
 			newKeys[j] = key
 			newValues[j] = this.values[i]
 		} else {
@@ -65,7 +73,7 @@ func (this *MyHashMap) resize() {
 			for node := nodes.Front(); node != nil; node = node.Next() {
 				kv := node.Value.(KV)
 				k := this.getIndex(kv.Key)
-				if newKeys[k] == 0 {
+				if newKeys[k] == NULL_KEY {
 					//插入新位置
 					newKeys[k] = kv.Key
 					newValues[k] = kv.Value
@@ -100,7 +108,7 @@ func (this *MyHashMap) Put(key int, value int) {
 	}
 	index := this.getIndex(key)
 	k := this.keys[index]
-	if k == 0 {
+	if k == NULL_KEY {
 		//直接插入
 		this.keys[index] = key
 		this.values[index] = value
@@ -141,7 +149,7 @@ func (this *MyHashMap) Put(key int, value int) {
 func (this *MyHashMap) Get(key int) int {
 	index := this.getIndex(key)
 	k := this.keys[index]
-	if k == 0 {
+	if k == NULL_KEY {
 		return -1
 	}
 	if k == key {
@@ -166,7 +174,7 @@ func (this *MyHashMap) Get(key int) int {
 func (this *MyHashMap) Remove(key int) {
 	index := this.getIndex(key)
 	k := this.keys[index]
-	if k == 0 {
+	if k == NULL_KEY {
 		return
 	}
 	if k == key {
@@ -183,7 +191,7 @@ func (this *MyHashMap) Remove(key int) {
 			}
 		} else {
 			//不存在链表
-			this.keys[index] = 0
+			this.keys[index] = NULL_KEY
 			this.values[index] = 0
 		}
 		this.len = this.len - 1

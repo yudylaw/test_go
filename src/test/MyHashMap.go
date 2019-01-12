@@ -5,6 +5,7 @@ import (
 )
 
 type MyHashMap struct {
+	//TODO 更好的设计：Node{hash、key、value、next}
 	keys       []int
 	values     []int
 	len        int
@@ -36,6 +37,7 @@ func Constructor5() MyHashMap {
 
 func (this *MyHashMap) hashCode(key int) int {
 	//模仿Java：高16bit不变，低16bit和高16bit做了一个异或
+	//减少hash冲突，让高低位都可以参与运算
 	h := key ^ (key >> 16)
 	return h
 }
@@ -50,6 +52,9 @@ func (this *MyHashMap) resize() {
 	newList := make([]*list.List, 2*this.cap)
 	this.cap = 2 * this.cap
 	//rehash
+	//TODO 更简单的获取新位置，避免rehash
+	//hash & oldCap=0保持原位
+	//hash & oldCap=1, index=index + oldCap
 	for i, key := range this.keys {
 		if key == NULL_KEY {
 			continue
@@ -98,6 +103,7 @@ func (this *MyHashMap) resize() {
 
 func (this *MyHashMap) getIndex(key int) int {
 	hash := this.hashCode(key)
+	//TODO this.cap - 1 & hash 更快
 	return hash % this.cap
 }
 

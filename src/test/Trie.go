@@ -3,6 +3,7 @@ package main
 import "fmt"
 
 type TrieNode struct {
+	//前缀树（字典树）
 	Nodes  []*TrieNode
 	Word   string
 	IsNode bool
@@ -76,7 +77,10 @@ func (this *Trie) Search(word string) bool {
 
 /** Returns if there is any word in the trie that starts with the given prefix. */
 func (this *Trie) StartsWith(prefix string) bool {
-	if this.Root == nil || len(prefix) == 0 {
+	if len(prefix) == 0 {
+		return true
+	}
+	if this.Root == nil {
 		return false
 	}
 	var node *TrieNode = this.Root
@@ -91,7 +95,7 @@ func (this *Trie) StartsWith(prefix string) bool {
 			}
 		}
 		//prefix
-		if flag && i == len(prefix) && !node.IsNode {
+		if flag && i == len(prefix) {
 			return true
 		}
 		if !flag {

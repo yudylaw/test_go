@@ -6,7 +6,7 @@ type TrieNode struct {
 	//前缀树（字典树）
 	Nodes  []*TrieNode
 	Word   string
-	IsNode bool
+	IsWord bool
 }
 type Trie struct {
 	Root *TrieNode
@@ -33,13 +33,13 @@ func (this *Trie) Insert(word string) {
 				break
 			}
 		}
-		isNode := i == len(word)
+		isWord := i == len(word)
 		if flag {
-			if !node.IsNode && isNode {
-				node.IsNode = true
+			if !node.IsWord && isWord {
+				node.IsWord = true
 			}
 		} else {
-			n := &TrieNode{Word: w, IsNode: isNode}
+			n := &TrieNode{Word: w, IsWord: isWord}
 			if node.Nodes == nil {
 				node.Nodes = make([]*TrieNode, 0)
 			}
@@ -65,7 +65,7 @@ func (this *Trie) Search(word string) bool {
 				break
 			}
 		}
-		if flag && i == len(word) && node.IsNode {
+		if flag && i == len(word) && node.IsWord {
 			return true
 		}
 		if !flag {

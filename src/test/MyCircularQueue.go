@@ -6,6 +6,7 @@ type Node struct {
 }
 
 type MyCircularQueue struct {
+	//设计循环队列
 	head *Node
 	tail *Node
 	cap  int

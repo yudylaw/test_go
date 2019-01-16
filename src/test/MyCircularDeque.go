@@ -7,6 +7,7 @@ type DequeNode struct {
 }
 
 type MyCircularDeque struct {
+	//设计循环双端队列
 	head *DequeNode
 	tail *DequeNode
 	cap  int

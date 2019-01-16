@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	_ "net/http/pprof"
 	"os"
 	"path/filepath"
 	"person"
@@ -109,7 +110,7 @@ func main() {
 	//	fmt.Println(str1)
 	//	fmt.Println(str2)
 
-	//	testChannel()
+	//testChannel()
 	//	testPerson();
 	//	man.Say();
 	//	fmt.Println(MAX);
@@ -117,7 +118,7 @@ func main() {
 	//	testSwitch();
 	//	testDefer()
 	//testPointer();
-	//	testArray()
+	//testArray()
 	//	testMap();
 	//	testClosure()
 	//	testStruct()
@@ -130,7 +131,7 @@ func main() {
 	//	testJson()
 	//	testErrs()
 	//	testPanic()
-	//	testSelect()
+	//testSelect()
 	//testTimer()
 	//	testFilePath()
 	//testDate()
@@ -146,7 +147,7 @@ func main() {
 	//testPtr()
 	//testTime()
 	nums := []int{1, 2, 3}
-	nums = nums[1:]
+	nums = nums[:2]
 	fmt.Printf("nums=%v", nums)
 	fmt.Println("end of main")
 }

@@ -32,8 +32,12 @@ func (this *Trie) Insert(word string) {
 				break
 			}
 		}
-		if !flag && !node.IsNode {
-			isNode := i == len(word)
+		isNode := i == len(word)
+		if flag {
+			if !node.IsNode && isNode {
+				node.IsNode = true
+			}
+		} else {
 			n := &TrieNode{Word: w, IsNode: isNode}
 			if node.Nodes == nil {
 				node.Nodes = make([]*TrieNode, 0)
@@ -54,13 +58,13 @@ func (this *Trie) Search(word string) bool {
 		w := word[:i]
 		flag := false
 		for _, n := range node.Nodes {
-			if n.Word == w && n.IsNode {
+			if n.Word == w {
 				flag = true
 				node = n
 				break
 			}
 		}
-		if flag && i == len(word) {
+		if flag && i == len(word) && node.IsNode {
 			return true
 		}
 		if !flag {
@@ -80,14 +84,14 @@ func (this *Trie) StartsWith(prefix string) bool {
 		w := prefix[:i]
 		flag := false
 		for _, n := range node.Nodes {
-			if n.Word == w && !node.IsNode {
+			if n.Word == w {
 				flag = true
 				node = n
 				break
 			}
 		}
 		//prefix
-		if flag && i == len(prefix) {
+		if flag && i == len(prefix) && !node.IsNode {
 			return true
 		}
 		if !flag {

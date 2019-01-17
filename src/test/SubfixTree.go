@@ -48,6 +48,7 @@ func (this *SubfixTree) Contains(word string) bool {
 		return false
 	}
 	w := word[0:1]
+	//所有后缀字符串
 	indexs := make([]int, 0)
 	flag := false
 	for _, n := range this.Root.Nodes {
@@ -68,6 +69,7 @@ func (this *SubfixTree) Contains(word string) bool {
 			continue
 		}
 		for i := 0; i < len(word); i++ {
+			//后缀字符串的前缀，满足
 			if subfix[i] == word[i] && i == len(word)-1 {
 				return true
 			}

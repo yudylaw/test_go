@@ -24,7 +24,7 @@ func Constructor9() Trie {
 func (this *Trie) Insert(word string) {
 	var node *TrieNode = this.Root
 	for i := 1; i <= len(word) && node != nil; i++ {
-		w := word[:i]
+		w := word[i-1 : i]
 		flag := false
 		for _, n := range node.Nodes {
 			if n.Word == w {
@@ -56,7 +56,7 @@ func (this *Trie) Search(word string) bool {
 	}
 	var node *TrieNode = this.Root
 	for i := 1; i <= len(word) && node != nil; i++ {
-		w := word[:i]
+		w := word[i-1 : i]
 		flag := false
 		for _, n := range node.Nodes {
 			if n.Word == w {
@@ -85,7 +85,7 @@ func (this *Trie) StartsWith(prefix string) bool {
 	}
 	var node *TrieNode = this.Root
 	for i := 1; i <= len(prefix) && node != nil; i++ {
-		w := prefix[:i]
+		w := prefix[i-1 : i]
 		flag := false
 		for _, n := range node.Nodes {
 			if n.Word == w {

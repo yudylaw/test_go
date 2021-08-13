@@ -8,7 +8,7 @@
 ### 版本（Versioning）
 将API的版本号放入URL
 ```
-https://api.yudylaw.com/api/v1/ （client api）(后续统一以client api示例)
+https://api.yudylaw.com/api/v1/ （client api）(后续统一以client api示例)
 https://api.yudylaw.com/v1/ （server api）
 ```
 
@@ -51,7 +51,7 @@ https://api.yudylaw.com/api/v1/relations
 - ?type=1：指定筛选条件
 
 ### 翻页（Pagination）
-查询资源集合时，与翻页有关参数如下：
+查询资源集合时，与翻页有关参数如下：
 
 - after 返回比after老的count条数据（不包含after），特殊的，第一次查询时，传入after=0，返回最新的count数据
 - before  返回比before新的count条数据（不包含before）
@@ -68,18 +68,18 @@ https://api.yudylaw.com/api/v1/relations
 }
 ```
 
-##### 获取最新的用户列表
+##### 获取最新的用户列表
 ```
 GET /api/v1/users/list?after=0&count=20
 ```
 
-##### 获取某个用户最新系统消息
+##### 获取某个用户最新系统消息
 ```
 GET /api/v1/messages/newest?uid=1110&before=300310&count=20
 ```
 
 ### 返回体（Response）
-考虑到Client端依赖的部分框架不支持标准的HTTP状态码，譬如403、400，API总是返回200状态码，调用方通过返回体中error_code是否大于0来判断接口成功与否。
+考虑到Client端依赖的部分框架不支持标准的HTTP状态码，譬如403、400，API总是返回200状态码，调用方通过返回体中error_code是否大于0来判断接口成功与否。
 请求成功（error_code = 0）
 ```json
 {
